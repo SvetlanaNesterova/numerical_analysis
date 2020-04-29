@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Лабораторная работа №2</title>
+        <script src="script_3.js" type="text/javascript"></script>
+        <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-base.min.js" type="text/javascript"></script>
+        <link href="style.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div class="main">
+            <div class="container">
+                <div id="menu">
+                    <ul>
+                        <li id='inputNumberLi'>
+                            <div class='divLi'><p><input type="number" id='inputNumber'
+                                min="1" max="100" value='2' 
+                                onchange="changeNumber()"></p></div>
+                        </li>
+                        <li id='inputRangeLi'>
+                            <div class='divLi'><p><input type="range" id='inputRange'
+                                autofocus min="1" max="100" value='2'
+                                oninput="changeRange()" onchange="changeRange()"></p></div>
+                        </li>
+                        <li id="button2Li">
+                            <a href="./lab_2.html">Лабораторная работа №2. Вариант 16</a>
+                        </li>
+                        <li id="button3Li">
+                            <a class='selected' href="./lab_3.html"><b>Лабораторная работа №3</b></a>
+                        </li>
+                    </ul>
+                </div> 
+                <div class="wrapper">
+                    <div id="chartContainer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

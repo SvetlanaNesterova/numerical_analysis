@@ -1,7 +1,6 @@
 window.onload = function(){
     chart = anychart.line();
-    chart.container("chartContainer");
-    chart.title("Лабораторная работа №2");
+    chart.container("chartContainer");;
     
     var xScale = anychart.scales.linear();
     xScale.minimum(0);
@@ -43,7 +42,11 @@ window.onload = function(){
     series.name("y(x)");
     series.connectMissingPoints(true);
     series.hovered().markers().enabled(false);
-    series.selected().markers().enabled(false);    
+    series.selected().markers().enabled(false);  
+
+    var zoomController = anychart.ui.zoom();
+    zoomController.target(chart);
+    zoomController.render();    
 }
 
 function setSegmentNumber(newValue) {

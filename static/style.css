@@ -1,51 +1,65 @@
 html, body, .main {
     height: 100%;
+    margin: 0;
 }
-
 .container {
+    max-width: 150vh;
     width: 100%;
     height: 100%;
-    max-width: 150vh;
     margin: 0 auto;
 }
 
-#range {
-}
-
 .wrapper {
-    height: calc(100vh - 75px);
+    height: calc(100vh - 100px);
 }
-
 #chartContainer {
     height: 100%;
 }
 
-
+#menu{
+    overflow: hidden;
+}
 ul {
-  margin: 0px;
-  padding: 0;
-  list-style: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: right;
 }
 li {
-  display: inline-block; /*один из способов разместить элементы в строку*/
+    float: left;
+    vertical-align:middle;
+}
+li:nth-last-child(1), li:nth-last-child(2) {
+    float: none;
+    display: inline-block;
 }
 
-p {
-  font: 120% verdana; 
-}
-#headerLi {
-  margin-left: 60px;
-  vertical-align: top;
-}
-#inputNumber {
-  font: 90% verdana; 
-  
+#menu {
+    background: #fafafa;
+    margin-bottom: 25px;
 }
 #inputNumberLi {
-  margin-bottom: 5px;
-  margin-left: 100px;
-  vertical-align: bottom;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 #inputRangeLi {
- vertical-align: bottom;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#inputNumber {
+    font: 90% verdana; 
+    color: #744C92;
+}
+
+a {
+    font: 105% verdana;
+    text-decoration: none;
+    padding: 1em;
+    display: block;
+    color: #744C92;
+}
+
+.selected{
+    color: #000000
 }
