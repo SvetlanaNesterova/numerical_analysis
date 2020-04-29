@@ -120,11 +120,6 @@ class Function {
     getH(n){
         return (this.segment[1] - this.segment[0]) / n;
     }
-    
-    getX(n){
-        let h = this.getH(n);
-        return Array.from(new Array(n), (e, i) => (this.segment[0] + i * h));
-    }   
 }
 
 const func = new Function()

@@ -39,21 +39,23 @@ li:nth-last-child(1), li:nth-last-child(2) {
     margin-bottom: 25px;
 }
 #inputNumberLi {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-#inputRangeLi {
+    /*padding: auto, 20px, auto, 20px;*/
     padding-left: 15px;
     padding-right: 15px;
 }
+#inputRangeLi {
+    /*padding: auto, 15px, auto, 15px;*/
+    padding-left: 0px;
+    padding-right: 10px;
+}
 
 #inputNumber {
-    font: 90% verdana; 
+    font: 100% verdana; 
     color: #744C92;
 }
 
 a {
-    font: 105% verdana;
+    font: 90% verdana;
     text-decoration: none;
     padding: 1em;
     display: block;

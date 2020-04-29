@@ -7,8 +7,10 @@ window.onload = function(){
     xScale.maximum(1.01);
     chart.xScale(xScale);
     var yScale = anychart.scales.linear();
-    yScale.minimum(0.04);
-    yScale.maximum(0.06);
+    yScale.minimum(-0.9);
+    yScale.maximum(0.2);
+    yScale.minimum(-10);
+    yScale.maximum(10);
     chart.yScale(yScale);
     chart.xAxis().title("X");
     chart.yAxis().title("Y");
@@ -83,22 +85,24 @@ class Method {
 }
 
 class Function {
-    segment = [0, 1]
+    segment = [0, 1];
+    C1 = 1 - 2.6 / Math.E;
+    C2 = 0;
     
     realY(x){
-        return 1 / (10 * (x * x - 0.8 * x + 2));
+        return this.C1 * Math.pow(Math.E, x) + alpha * x*x - alpha * x + this.C2;
     }
     
-    f(x, y) {
-        return -20 * y * y * (x - 0.4);
+    yDer(x, y, y1) {
+        return y1;
     }
     
-    dx(x, y){
-        return -20 * y * y
+    secondDer(x, y, y1){
+        return y + 2 * (alpha + 1) + alpha* x * (1 - x);
     }
     
     dy(x, y){
-        return -40 * y * (x - 0.4)
+        return 0
     }
     
     dxdx(x, y){
@@ -106,26 +110,21 @@ class Function {
     }
     
     dxdy(x, y){
-        return -40 * y
+        return 0
     }
     
     dydy(x, y){
-        return -40 * (x - 0.4)
+        return 0
     }
     
     getH(n){
         return (this.segment[1] - this.segment[0]) / n;
     }
-    
-    getX(n){
-        let h = this.getH(n);
-        return Array.from(new Array(n), (e, i) => (this.segment[0] + i * h));
-    }   
 }
 
-const func = new Function()
-const y0 = 0.05
-const eps = 0.0000000001
+const func = new Function();
+const eps = 0.0000000001;
+const alpha = 3.6;
 
 const methods = [
     new Method(
@@ -142,186 +141,100 @@ const methods = [
             return values; 
         }),
     new Method(
-        "Эйлера явный", 
+        "Метод стрельбы:\nделение отрезка пополам\n+ явный метод Эйлера", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
-            
-            for (i = 0; i < n; i++){
-                y = y + h * f.f(x, y);
-                x = x + h
-                values.push([x, y]);
-            }
-            return values;
+            return solveBisectionWithCauchyProblem(n, f, Euler);
         }),
     new Method(
-        "Эйлера с пересчетом", 
+        "Метод стрельбы:\nделение отрезка пополам\n+ метод Эйлера с пересчетом",
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
-            
-            for (i = 0; i < n; i++){
-                helpY = y + h * f.f(x, y);
-                y = y + h / 2 * (f.f(x, y) + f.f(x + h, helpY));
-                x = x + h
-                values.push([x, y]);
-            }
-            return values;
+            return [] //solveBisectionWithCauchyProblem(n, f, EulerWithPereschet);
         }),
     new Method(
-        "Эйлера неявный", 
-        function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
-            
-            for (i = 0; i < n; i++){
-                a = 20 * h * (x + h - 0.4)
-                b = 1
-                c = -y
-                d = b*b - 4 * a * c
-                if (-eps < d && d < 0)
-                    d = 0
-                newY = (-b + Math.sqrt(d)) / (2 * a)
-                if (Math.abs(a) > eps && d >= 0)
-                    y = newY
-                x = x + h
-                values.push([x, y]);
-            }
-            return values;
-        }),
-    new Method(
-        "Коши", 
-        function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
-            
-            for (i = 0; i < n; i++){
-                helpY = y + h / 2 * f.f(x, y);
-                y = y + h * f.f(x + h / 2, helpY);
-                x = x + h
-                values.push([x, y]);
-            }
-            return values;
-        }),
-    new Method(
-        "Рунге-Кутты 4-го порядка", 
-        function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
-            
-            for (i = 0; i < n; i++){
-                y = calculateRungeKuttaStep(f.f, x, y, h)
-                x = x + h
-                values.push([x, y]);
-            }
-            return values;
-        }),
-    new Method(
-        "Тейлора 2-го порядка", 
-        function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
-            
-            for (i = 0; i < n; i++){
-                der_y = f.f(x, y)
-                der2_y = f.dx(x, y) + f.dy(x, y) * f.f(x, y)
-                y = y + der_y * h + der2_y / 2 * h * h
-                x = x + h
-                values.push([x, y]);
-            }
-            return values;
-        }),
-    new Method(
-        "Тейлора 3-го порядка", 
-        function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
-            
-            for (i = 0; i < n; i++){
-                der_y = f.f(x, y)
-                der2_y = f.dx(x, y) + f.dy(x, y) * f.f(x, y)
-                der3_y = f.dxdx(x, y) + f.dxdy(x, y) * f.f(x, y) + 
-                    f.dy(x, y) * (f.dx(x, y) + f.dy(x, y) * f.f(x, y)) + 
-                    f.f(x, y) * (f.dxdy(x, y) + f.dydy(x, y) * f.f(x, y))
-                y = y + der_y * h + der2_y * h * h / 2 + der3_y * h * h * h/ 3
-                x = x + h
-                values.push([x, y]);
-            }
-            return values; 
-        }),
-    new Method(
-        "Адамса экстраполяционный 2-шаговый", 
-        function(n, func) {
-            h = func.getH(n);
-            x = func.segment[0]
-            y = y0;
-            f = func.f(x, y)
-            values = [[x, y, f]];
-            
-            for (i = 0; i < n; i++){
-                a = 10 * h * (x + h - 0.4)
-                b = 1
-                c = - h / 2 * f - y
-                d = b*b - 4 * a * c
-                if (-eps < d && d < 0)
-                    d = 0
-                newY = (-b + Math.sqrt(d)) / (2 * a)
-                if (Math.abs(a) > eps && d >= 0)
-                    y = newY
-                x = x + h
-                f = func.f(x, y)
-                values.push([x, y, f]);
-            }
-            return values;
-        }),
-    new Method(
-        "Адамса экстраполяционный 3-шаговый", 
-        function(n, func) {
-            h = func.getH(n);
-            
-            prevX = func.segment[0]
-            prevY = y0;
-            prevF = func.f(prevX, prevY)
-            values = [[prevX, prevY, prevF]];
-            
-            x = prevX + h
-            y = calculateRungeKuttaStep(func.f, prevX, prevY, h)
-            f = func.f(x, y)
-            values.push([x, y, f]);
-            
-            for (i = 1; i < n; i++){
-                a = 25 / 3 * h * (x + h - 0.4)
-                b = 1
-                c = - 2 / 3 * h * f + h / 12 * prevF - y
-                d = b*b - 4 * a * c
-                if (-eps < d && d < 0)
-                    d = 0
-                newY = (-b + Math.sqrt(d)) / (2 * a)
-                if (Math.abs(a) > eps && d >= 0)
-                    y = newY
-                x = x + h
-                f = func.f(x, y)
-                values.push([x, y, f]);
-                [prevX, prevY, prevF] = values[i]
-            }
-            return values;
+        "Метод стрельбы:\nделение отрезка пополам\n+ метод Рунге-Кутты 4-го порядка",
+        function() {
+            return [] //solveBisectionWithCauchyProblem(n, f, RungeKutta);
         }
     )
 ]
+function solveBisectionWithCauchyProblem(n, f, methodForCauchyProblem){
+    left = -10;
+    right = 10;
+    index = 0;
+    while (right - left > 0.0000001 && index < 100) {
+        y0 = (left + right) / 2;
+        // F = derY0 - y0 + alpha == 0
+        derY0 = y0 - alpha;
+        values = methodForCauchyProblem(n, f, y0, derY0);
+        
+        console.log(values);
+        y1 = values[n][1];
+        derY1 = values[n - 1][2];
+        console.log("Y1", y1, "derY1", derY1);
+        
+        calculatedG = derY1 + y1 - 2 * Math.E - alpha + 2;
+        // G = derY1 + y1 - 2 * Math.E - alpha + 2 == 0
+        calculatedY1 = - derY1 + 2 * Math.E + alpha - 2 
+        
+        console.log(index, y0, derY0, calculatedG);
+        
+        if (calculatedG < 0)
+            left = y0;
+        else
+            right = y0;
+         
+        index += 1;
+    }
+    return values;
+}
+
+
+function Euler(n, f, y0, yDer0) {
+    h = f.getH(n);
+    x = f.segment[0];
+    y = y0;
+    yDer = yDer0;
+    values = [[x, y, yDer]];
+    
+    for (i = 0; i < n; i++){
+        newY = y + h * f.yDer(x, y, yDer);
+        newYDer = yDer + h * f.secondDer(x, y, yDer);
+        x = x + h;
+        y = newY;
+        yDer = newYDer;
+        values.push([x, y, yDer]);
+    }
+    return values;
+}
+
+function EulerWithPereschet(n, f, y0, yDer0) {
+    h = f.getH(n);
+    x = f.segment[0]
+    y = y0;
+    values = [[x, y]];
+    
+    for (i = 0; i < n; i++){
+        helpY = y + h * f.f(x, y);
+        y = y + h / 2 * (f.f(x, y) + f.f(x + h, helpY));
+        x = x + h
+        values.push([x, y]);
+    }
+    return values;
+}
+
+function RungeKutta(n, f, y0, yDer0) {
+    h = f.getH(n);
+    x = f.segment[0]
+    y = y0;
+    values = [[x, y]];
+    
+    for (i = 0; i < n; i++){
+        y = calculateRungeKuttaStep(f.f, x, y, h)
+        x = x + h
+        values.push([x, y]);
+    }
+    return values;
+}
 
 function calculateRungeKuttaStep(func, x, y, h){
     k1 = h * func(x, y);
