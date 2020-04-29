@@ -9,25 +9,26 @@
     <body>
         <div class="main">
             <div class="container">
-                <div class="canvas_col">
-                    <div class="range">
-                        <ul>
-                            <li id='inputNumberLi'>
-                                <input type="number" id='inputNumber'
-                                    min="1" max="100" value='2' 
-                                    onchange="changeNumber()">                    
-                            </li>
-                            <li id='inputRangeLi'>
-                                <input type="range" id='inputRange'
-                                    autofocus min="1" max="100" value='2'
-                                    oninput="changeRange()" onchange="changeRange()">
-                            </li>
-                            <li id="headerLi">
-                                <p>Вариант 16. Нестерова Светлана</p>
-                            </li>
-                        </ul>
-                        </div>
-                    <div id="chartContainer"></div>
+                <div id="range">
+                    <ul>
+                        <li id='inputNumberLi'>
+                            <input type="number" id='inputNumber'
+                                min="1" max="100" value='2' 
+                                onchange="changeNumber()">                    
+                        </li>
+                        <li id='inputRangeLi'>
+                            <input type="range" id='inputRange'
+                                autofocus min="1" max="100" value='2'
+                                oninput="changeRange()" onchange="changeRange()">
+                        </li>
+                        <li id="headerLi">
+                            <p>Вариант 16. Нестерова Светлана</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="wrapper">
+                    <div id="chartContainer">
+                    </div>
                 </div>
             </div>
         </div>
