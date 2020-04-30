@@ -17,7 +17,9 @@ window.onload = function(){
       .enabled(true)
       .position("right")
       .itemsLayout("vertical-expandable")
-    
+      .width('25%')
+      .padding(7, 7, 7, 30);
+
     allDataSets = [];
     for (const method of methods.slice(1)) {
         var data = anychart.data.set([]);
@@ -42,11 +44,7 @@ window.onload = function(){
     series.name("y(x)");
     series.connectMissingPoints(true);
     series.hovered().markers().enabled(false);
-    series.selected().markers().enabled(false);  
-
-    var zoomController = anychart.ui.zoom();
-    zoomController.target(chart);
-    zoomController.render();    
+    series.selected().markers().enabled(false);
 }
 
 function setSegmentNumber(newValue) {
@@ -130,9 +128,9 @@ const methods = [
     new Method(
         "y(x)", 
         function(n, f) {
-            h = f.getH(n);
-            x = 0
-            values = [];
+            let h = f.getH(n);
+            let x = 0
+            let values = [];
             for (i = 0; i < n; i++){
                 values.push([x, f.realY(x)]);
                 x = x + h;
@@ -143,10 +141,10 @@ const methods = [
     new Method(
         "Эйлера явный", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
+            let h = f.getH(n);
+            let x = f.segment[0]
+            let y = y0;
+            let values = [[x, y]];
             
             for (i = 0; i < n; i++){
                 y = y + h * f.f(x, y);
@@ -158,13 +156,13 @@ const methods = [
     new Method(
         "Эйлера с пересчетом", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
+            let h = f.getH(n);
+            let x = f.segment[0]
+            let y = y0;
+            let values = [[x, y]];
             
             for (i = 0; i < n; i++){
-                helpY = y + h * f.f(x, y);
+                let helpY = y + h * f.f(x, y);
                 y = y + h / 2 * (f.f(x, y) + f.f(x + h, helpY));
                 x = x + h
                 values.push([x, y]);
@@ -174,19 +172,19 @@ const methods = [
     new Method(
         "Эйлера неявный", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
+            let h = f.getH(n);
+            let x = f.segment[0]
+            let y = y0;
+            let values = [[x, y]];
             
             for (i = 0; i < n; i++){
-                a = 20 * h * (x + h - 0.4)
-                b = 1
-                c = -y
-                d = b*b - 4 * a * c
+                let a = 20 * h * (x + h - 0.4)
+                let b = 1
+                let c = -y
+                let d = b*b - 4 * a * c
                 if (-eps < d && d < 0)
                     d = 0
-                newY = (-b + Math.sqrt(d)) / (2 * a)
+                let newY = (-b + Math.sqrt(d)) / (2 * a)
                 if (Math.abs(a) > eps && d >= 0)
                     y = newY
                 x = x + h
@@ -197,13 +195,13 @@ const methods = [
     new Method(
         "Коши", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
+            let h = f.getH(n);
+            let x = f.segment[0]
+            let y = y0;
+            let values = [[x, y]];
             
             for (i = 0; i < n; i++){
-                helpY = y + h / 2 * f.f(x, y);
+                let helpY = y + h / 2 * f.f(x, y);
                 y = y + h * f.f(x + h / 2, helpY);
                 x = x + h
                 values.push([x, y]);
@@ -213,10 +211,10 @@ const methods = [
     new Method(
         "Рунге-Кутты 4-го порядка", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
+            let h = f.getH(n);
+            let x = f.segment[0]
+            let y = y0;
+            let values = [[x, y]];
             
             for (i = 0; i < n; i++){
                 y = calculateRungeKuttaStep(f.f, x, y, h)
@@ -228,14 +226,14 @@ const methods = [
     new Method(
         "Тейлора 2-го порядка", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
+            let h = f.getH(n);
+            let x = f.segment[0]
+            let y = y0;
+            let values = [[x, y]];
             
             for (i = 0; i < n; i++){
-                der_y = f.f(x, y)
-                der2_y = f.dx(x, y) + f.dy(x, y) * f.f(x, y)
+                let der_y = f.f(x, y)
+                let der2_y = f.dx(x, y) + f.dy(x, y) * f.f(x, y)
                 y = y + der_y * h + der2_y / 2 * h * h
                 x = x + h
                 values.push([x, y]);
@@ -245,15 +243,15 @@ const methods = [
     new Method(
         "Тейлора 3-го порядка", 
         function(n, f) {
-            h = f.getH(n);
-            x = f.segment[0]
-            y = y0;
-            values = [[x, y]];
+            let h = f.getH(n);
+            let x = f.segment[0]
+            let y = y0;
+            let values = [[x, y]];
             
             for (i = 0; i < n; i++){
-                der_y = f.f(x, y)
-                der2_y = f.dx(x, y) + f.dy(x, y) * f.f(x, y)
-                der3_y = f.dxdx(x, y) + f.dxdy(x, y) * f.f(x, y) + 
+                let der_y = f.f(x, y)
+                let der2_y = f.dx(x, y) + f.dy(x, y) * f.f(x, y)
+                let der3_y = f.dxdx(x, y) + f.dxdy(x, y) * f.f(x, y) + 
                     f.dy(x, y) * (f.dx(x, y) + f.dy(x, y) * f.f(x, y)) + 
                     f.f(x, y) * (f.dxdy(x, y) + f.dydy(x, y) * f.f(x, y))
                 y = y + der_y * h + der2_y * h * h / 2 + der3_y * h * h * h/ 3
@@ -263,22 +261,22 @@ const methods = [
             return values; 
         }),
     new Method(
-        "Адамса экстраполяционный 2-шаговый", 
+        "Адамса 2-шаговый\nэкстраполяционный",
         function(n, func) {
-            h = func.getH(n);
-            x = func.segment[0]
-            y = y0;
-            f = func.f(x, y)
-            values = [[x, y, f]];
+            let h = func.getH(n);
+            let x = func.segment[0]
+            let y = y0;
+            let f = func.f(x, y)
+            let values = [[x, y, f]];
             
             for (i = 0; i < n; i++){
-                a = 10 * h * (x + h - 0.4)
-                b = 1
-                c = - h / 2 * f - y
-                d = b*b - 4 * a * c
+                let a = 10 * h * (x + h - 0.4)
+                let b = 1
+                let c = - h / 2 * f - y
+                let d = b*b - 4 * a * c
                 if (-eps < d && d < 0)
                     d = 0
-                newY = (-b + Math.sqrt(d)) / (2 * a)
+                let newY = (-b + Math.sqrt(d)) / (2 * a)
                 if (Math.abs(a) > eps && d >= 0)
                     y = newY
                 x = x + h
@@ -288,34 +286,34 @@ const methods = [
             return values;
         }),
     new Method(
-        "Адамса экстраполяционный 3-шаговый", 
+        "Адамса 3-шаговый\nэкстраполяционный", 
         function(n, func) {
-            h = func.getH(n);
+            let h = func.getH(n);
             
-            prevX = func.segment[0]
-            prevY = y0;
-            prevF = func.f(prevX, prevY)
-            values = [[prevX, prevY, prevF]];
+            let prevX = func.segment[0]
+            let prevY = y0;
+            let prevF = func.f(prevX, prevY)
+            let values = [[prevX, prevY, prevF]];
             
-            x = prevX + h
-            y = calculateRungeKuttaStep(func.f, prevX, prevY, h)
-            f = func.f(x, y)
+            let x = prevX + h
+            let y = calculateRungeKuttaStep(func.f, prevX, prevY, h)
+            let f = func.f(x, y)
             values.push([x, y, f]);
             
             for (i = 1; i < n; i++){
-                a = 25 / 3 * h * (x + h - 0.4)
-                b = 1
-                c = - 2 / 3 * h * f + h / 12 * prevF - y
-                d = b*b - 4 * a * c
+                let a = 25 / 3 * h * (x + h - 0.4)
+                let b = 1
+                let c = - 2 / 3 * h * f + h / 12 * prevF - y
+                let d = b*b - 4 * a * c
                 if (-eps < d && d < 0)
                     d = 0
-                newY = (-b + Math.sqrt(d)) / (2 * a)
+                let newY = (-b + Math.sqrt(d)) / (2 * a)
                 if (Math.abs(a) > eps && d >= 0)
                     y = newY
                 x = x + h
                 f = func.f(x, y)
                 values.push([x, y, f]);
-                [prevX, prevY, prevF] = values[i]
+                [prevX, prevY, prevF] = values[i];
             }
             return values;
         }
@@ -323,9 +321,9 @@ const methods = [
 ]
 
 function calculateRungeKuttaStep(func, x, y, h){
-    k1 = h * func(x, y);
-    k2 = h * func(x + h / 2, y + k1 / 2);
-    k3 = h * func(x + h / 2, y + k2 / 2);
-    k4 = h * func(x + h, y + k3);
+    let k1 = h * func(x, y);
+    let k2 = h * func(x + h / 2, y + k1 / 2);
+    let k3 = h * func(x + h / 2, y + k2 / 2);
+    let k4 = h * func(x + h, y + k3);
     return y + k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6;
 }
