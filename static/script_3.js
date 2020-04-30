@@ -7,7 +7,7 @@ window.onload = function(){
     xScale.maximum(1.01);
     chart.xScale(xScale);
     
-    setYScale(-0.9, 3.1);
+    setYScale(-0.9, 3.2);
     
     chart.xAxis().title("X");
     chart.yAxis().title("Y");
@@ -16,8 +16,26 @@ window.onload = function(){
       .enabled(true)
       .position("right")
       .itemsLayout("vertical-expandable")
-      .width('25%')
-      .padding(7, 7, 7, 30);
+      .width('30%')
+      //.lineHeight("110%")
+      .margin(-70, 4, 4, 4)
+      .padding(0, 7, 7, 14);
+
+    chart.legend().itemsFormatter(function(legendItems) {
+      console.log(legendItems);
+      legendItems.unshift({
+        text: "Решение краевой задачи:\n" +
+              "y''(x) = y + 2*(a+1) + a*x*(1-x)\n" +
+              "д) y'(0) - y(0) = -a\n" +
+              "г) y'(1) + y(1) = 2*e + a - 2\n\n" +
+              "N = 16\n" +
+              "a = 2 + 0.1 * N = 3.6\n",
+        iconEnabled: false,
+        lineHeight: "35%",
+        fontSize: 15
+      });
+      return legendItems;
+    });
     
     allDataSets = [];
     for (const method of methods.slice(1)) {
@@ -63,7 +81,7 @@ function setSegmentNumber(newValue) {
         setYScale(-0.9, 7);
     }
     else {
-        setYScale(-0.9, 3.1);
+        setYScale(-0.9, 3.2);
     }
     inputRange.value = newValue;
     inputNumber.value = newValue;
@@ -164,7 +182,7 @@ const methods = [
             return solveBisectionWithCauchyProblem(n, f, RungeKutta);
         }),
     new Method(
-        "Метод разностной прогонки: ",
+        "Метод разностной прогонки",
         function(n, f) {
             let h = f.getH(n);
             // yDer(0) = a0 * y(0) + a1

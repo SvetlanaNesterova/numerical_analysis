@@ -8,7 +8,7 @@ window.onload = function(){
     chart.xScale(xScale);
     var yScale = anychart.scales.linear();
     yScale.minimum(0.04);
-    yScale.maximum(0.06);
+    yScale.maximum(0.062);
     chart.yScale(yScale);
     chart.xAxis().title("X");
     chart.yAxis().title("Y");
@@ -17,8 +17,22 @@ window.onload = function(){
       .enabled(true)
       .position("right")
       .itemsLayout("vertical-expandable")
-      .width('25%')
-      .padding(7, 7, 7, 30);
+      .width('30%')
+      .margin(-70, 4, 4, 4)
+      .padding(0, 7, 7, 14);
+
+    chart.legend().itemsFormatter(function(legendItems) {
+      console.log(legendItems);
+      legendItems.unshift({
+        text: "Решение задачи Коши:\n" +
+              "y'(x) = -20*y^2 * (x - 0.4)\n" +
+              "y_0 = 0.05\n",
+        iconEnabled: false,
+        lineHeight: "35%",
+        fontSize: 15,
+      });
+      return legendItems;
+    });
 
     allDataSets = [];
     for (const method of methods.slice(1)) {
